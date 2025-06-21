@@ -15,7 +15,7 @@
      (string-append "bili-qr-login-" (number->string (current-milliseconds)) ".png"))))
 
 (define (qr-code-fail-message text)
-  (displayln "无法生生生生成二维码。")
+  (displayln "无法生成二维码。")
   (displayln "请手动将如下文本转换为二维码，并用Bilibili客户端扫描：")
   (displayln text))
 
