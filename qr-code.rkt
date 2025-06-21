@@ -18,8 +18,8 @@
     (qr-write text temp-file)
     (case (system-type 'os)
       [(windows)
-       (let ([start (find-executable-path "start")])
-         (system* start temp-file))]
+       (let ([explorer (find-executable-path "explorer")])
+         (system* explorer temp-file))]
       ([unix]
        (let ([xdg-open (find-executable-path "xdg-open")])
          (system* xdg-open temp-file))))))
