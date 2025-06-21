@@ -60,7 +60,7 @@
     (let ([code (hash-ref json 'code)]
           [data (hash-ref json 'data)])
       (case code
-        [(0) (printf "~a UID:~a\n"
+        [(0) (printf "已登录用户：~a UID:~a\n"
                      (hash-ref data 'uname)
                      (hash-ref data 'mid))]
         [(-101) (display "未登录\n")]
