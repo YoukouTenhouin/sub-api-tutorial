@@ -126,19 +126,21 @@
             (fetch (+days current 1) (cons res records))))
         (append* records))))
 
-(struct bili-gift-record (id
-                          name
-                          count
-                          sender-name
-                          sender-uid
-                          timestamp
-                          silver
-                          total-hamster
-                          ios-hamster
-                          normal-hamster
-                          total-gold
-                          ios-gold
-                          normal-gold))
+(struct bili-gift-record
+  (id
+   name
+   count
+   sender-name
+   sender-uid
+   timestamp
+   silver
+   total-hamster
+   ios-hamster
+   normal-hamster
+   total-gold
+   ios-gold
+   normal-gold)
+  #:transparent)
 
 (define (time-string->timestamp str)
   (->posix (parse-moment str "yyyy-MM-dd HH:mm:ss")))
