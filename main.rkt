@@ -127,19 +127,9 @@
         (append* records))))
 
 (struct bili-gift-record
-  (id
-   name
-   count
-   sender-name
-   sender-uid
-   timestamp
-   silver
-   total-hamster
-   ios-hamster
-   normal-hamster
-   total-gold
-   ios-gold
-   normal-gold)
+  (id name count sender-name sender-uid timestamp silver
+      total-hamster ios-hamster normal-hamster
+      total-gold ios-gold normal-gold)
   #:transparent)
 
 (define (time-string->timestamp str)
@@ -147,20 +137,11 @@
 
 (define (api-json->gift-record json)
   (let ([json (hash-set json 'time (time-string->timestamp (hash-ref json 'time)))])
-    (apply bili-gift-record (map (curry hash-ref json)
-                            '(gift_id
-                              gift_name
-                              gift_num
-                              uname
-                              uid
-                              time
-                              silver
-                              hamster
-                              ios_hamster
-                              normal_hamster
-                              gold
-                              ios_gold
-                              normal_gold)))))
+    (apply
+     bili-gift-record
+     (map (curry hash-ref json)
+          '(gift_id gift_name gift_num uname uid time silver
+                    hamster ios_hamster normal_hamster gold ios_gold normal_gold)))))
 
 (define (reconcile-records records)
   (define ret (vector-map! api-json->gift-record (list->vector records)))
@@ -174,19 +155,20 @@
   (bili-login)
   (bili-user-info)
   (reconcile-records
-   (if (list? gift_id)
-       (append* empty
-                (map
-                 (lambda (g)
-                   (bili-fetch-records-date-range begin-date end-date
-                                                  #:gift_id g
-                                                  #:uname uname
-                                                  #:coin_type coin_type))
-                 gift_id))
-       (bili-fetch-records-date-range begin-date end-date
-                                      #:gift_id gift_id
-                                      #:uname uname
-                                      #:coin_type coin_type))))
+   (if
+    (list? gift_id)
+    (append*
+     empty (map (lambda (g)
+                  (bili-fetch-records-date-range
+                   begin-date end-date
+                   #:gift_id g
+                   #:uname uname
+                   #:coin_type coin_type))
+                gift_id))
+    (bili-fetch-records-date-range begin-date end-date
+                                   #:gift_id gift_id
+                                   #:uname uname
+                                   #:coin_type coin_type))))
 
 (define (run-in-context fun . args)
   (let ([jar (new list-cookie-jar%)])
@@ -196,5 +178,5 @@
       (apply fun args))))
 
 (define (bili-fetch-sub-records begin-date [end-date (today #:tz "Asia/Shanghai")])
-  (run-in-context (lambda () (bili-fetch-gift-records
-                              begin-date end-date #:gift_id '("10001" "10002" "10003")))))
+  (run-in-context (lambda () (bili-fetch-gift-records begin-date end-date
+                                                      #:gift_id '("10001" "10002" "10003")))))

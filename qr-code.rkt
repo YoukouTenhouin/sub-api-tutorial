@@ -13,16 +13,19 @@
      temp-dir
      (string-append "bili-qr-login-" (number->string (current-milliseconds)) ".png"))))
 
+(define (platform-file-opener)
+  (find-executable-path
+   (case (system-type 'os)
+     [(windows) "exploere"]
+     [(unix) "xdg-open"]
+     ; This is provided to me by Gemini. I don't own a Mac so I can't test it.
+     ; If this ever blows up... Well it's your fault for using a Mac.
+     [(macos) "open"])))
+
 (define (qr-code-fallback text)
   (let ([temp-file (get-temp-file)])
     (qr-write text temp-file)
-    (case (system-type 'os)
-      [(windows)
-       (let ([explorer (find-executable-path "explorer")])
-         (system* explorer temp-file))]
-      ([unix]
-       (let ([xdg-open (find-executable-path "xdg-open")])
-         (system* xdg-open temp-file))))))
+    (system* (platform-file-opener) temp-file)))
 
 (define (qr-code text)
   (let ([qrencode (find-executable-path qr-command)])
